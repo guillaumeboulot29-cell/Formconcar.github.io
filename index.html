@@ -1,0 +1,908 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sondage - Disponibilités Bénévoles</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            max-width: 900px;
+            width: 100%;
+            padding: 40px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+            text-align: center;
+        }
+
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+
+        .personal-info {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 30px;
+            border: 2px solid #e9ecef;
+        }
+
+        .personal-info-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-row {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .form-group {
+            flex: 1;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 8px;
+            font-size: 14px;
+        }
+
+        .form-label .required {
+            color: #ef4444;
+            margin-left: 4px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 12px 15px;
+            border: 2px solid #ddd;
+            border-radius: 8px;
+            font-size: 15px;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow: 0 0 0 3px rgba(102, 126, 234, 0.1);
+        }
+
+        .form-input::placeholder {
+            color: #aaa;
+        }
+
+        @media (max-width: 600px) {
+            .form-row {
+                flex-direction: column;
+            }
+        }
+
+        .category {
+            background: #f8f9fa;
+            border-radius: 12px;
+            padding: 25px;
+            margin-bottom: 20px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .category:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.1);
+        }
+
+        .category-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .category-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #333;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .icon {
+            font-size: 24px;
+        }
+
+        .response-group {
+            display: flex;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .btn-response {
+            flex: 1;
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .btn-response:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .btn-response.selected-yes {
+            background: #10b981;
+            color: white;
+            border-color: #10b981;
+        }
+
+        .btn-response.selected-no {
+            background: #ef4444;
+            color: white;
+            border-color: #ef4444;
+        }
+
+        .details-section {
+            display: none;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 2px solid #e9ecef;
+            animation: slideDown 0.3s ease;
+        }
+
+        .details-section.active {
+            display: block;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .date-selection {
+            margin-bottom: 20px;
+        }
+
+        .date-label {
+            font-weight: 600;
+            color: #555;
+            margin-bottom: 10px;
+            display: block;
+        }
+
+        .date-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 15px;
+        }
+
+        .btn-date {
+            padding: 12px 24px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 15px;
+            transition: all 0.3s ease;
+            position: relative;
+            font-weight: 500;
+        }
+
+        .btn-date:hover {
+            border-color: #667eea;
+            background: #f0f4ff;
+            transform: translateY(-2px);
+        }
+
+        .btn-date.selected {
+            background: #667eea;
+            color: white;
+            border-color: #667eea;
+        }
+
+        .btn-date.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #10b981;
+            color: white;
+            width: 22px;
+            height: 22px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 13px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .times-per-date {
+            margin-top: 15px;
+        }
+
+        .date-time-block {
+            display: none;
+            background: white;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 2px solid #667eea;
+            animation: slideDown 0.3s ease;
+        }
+
+        .date-time-block.active {
+            display: block;
+        }
+
+        .date-time-title {
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 10px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .date-time-title::before {
+            content: '📅';
+            font-size: 16px;
+        }
+
+        .time-options {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .btn-time {
+            padding: 10px 18px;
+            border: 2px solid #ddd;
+            background: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .btn-time:hover {
+            border-color: #764ba2;
+            background: #faf5ff;
+            transform: translateY(-2px);
+        }
+
+        .btn-time.selected {
+            background: #764ba2;
+            color: white;
+            border-color: #764ba2;
+        }
+
+        .btn-time.selected::after {
+            content: '✓';
+            position: absolute;
+            top: -6px;
+            right: -6px;
+            background: #10b981;
+            color: white;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            font-weight: bold;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .hint-text {
+            font-size: 13px;
+            color: #888;
+            font-style: italic;
+            margin-top: 8px;
+        }
+
+        .submit-section {
+            margin-top: 30px;
+            text-align: center;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border: none;
+            padding: 15px 50px;
+            border-radius: 10px;
+            font-size: 18px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
+        }
+
+        .result-message {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #d1fae5;
+            border: 2px solid #10b981;
+            border-radius: 10px;
+            color: #065f46;
+        }
+
+        .result-message.active {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @media (max-width: 600px) {
+            .container {
+                padding: 20px;
+            }
+
+            h1 {
+                font-size: 24px;
+            }
+
+            .response-group {
+                flex-direction: column;
+            }
+
+            .date-options, .time-options {
+                flex-direction: column;
+            }
+
+            .btn-date, .btn-time {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🗓️ Sondage de Disponibilités</h1>
+        <p class="subtitle">Merci de nous indiquer vos disponibilités pour chaque activité<br>
+        <strong>✨ Sélectionnez les dates, puis les horaires pour chaque date</strong></p>
+
+        <!-- Informations personnelles -->
+        <div class="personal-info">
+            <div class="personal-info-title">
+                <span>👤</span>
+                <span>Vos informations</span>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Prénom<span class="required">*</span></label>
+                    <input type="text" class="form-input" id="prenom" placeholder="Votre prénom" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">Nom<span class="required">*</span></label>
+                    <input type="text" class="form-input" id="nom" placeholder="Votre nom" required>
+                </div>
+            </div>
+            <div class="form-row">
+                <div class="form-group">
+                    <label class="form-label">Téléphone<span class="required">*</span></label>
+                    <input type="tel" class="form-input" id="telephone" placeholder="06 12 34 56 78" required>
+                </div>
+            </div>
+        </div>
+
+        <!-- Préparation de la salle -->
+        <div class="category" data-category="preparation">
+            <div class="category-header">
+                <div class="category-title">
+                    <span class="icon">🧹</span>
+                    <span>Préparation de la salle</span>
+                </div>
+            </div>
+            <div class="response-group">
+                <button class="btn-response" data-response="yes">✓ Oui, je suis disponible</button>
+                <button class="btn-response" data-response="no">✗ Non, pas disponible</button>
+            </div>
+            <div class="details-section">
+                <div class="date-selection">
+                    <label class="date-label">Étape 1 : Sélectionnez une ou plusieurs dates</label>
+                    <div class="date-options">
+                        <button class="btn-date" data-date="2025-11-15" data-label="Vendredi 15 Nov">Vendredi 15 Nov</button>
+                        <button class="btn-date" data-date="2025-11-16" data-label="Samedi 16 Nov">Samedi 16 Nov</button>
+                        <button class="btn-date" data-date="2025-11-17" data-label="Dimanche 17 Nov">Dimanche 17 Nov</button>
+                    </div>
+                    <p class="hint-text">💡 Cliquez sur les dates où vous êtes disponible</p>
+                </div>
+                <div class="times-per-date">
+                    <label class="date-label">Étape 2 : Pour chaque date, sélectionnez vos horaires</label>
+                    
+                    <div class="date-time-block" data-for-date="2025-11-15">
+                        <div class="date-time-title">Vendredi 15 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-16">
+                        <div class="date-time-title">Samedi 16 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-17">
+                        <div class="date-time-title">Dimanche 17 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <p class="hint-text">💡 Vous pouvez sélectionner plusieurs horaires par date</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Réception des vêtements -->
+        <div class="category" data-category="reception">
+            <div class="category-header">
+                <div class="category-title">
+                    <span class="icon">👕</span>
+                    <span>Réception des vêtements</span>
+                </div>
+            </div>
+            <div class="response-group">
+                <button class="btn-response" data-response="yes">✓ Oui, je suis disponible</button>
+                <button class="btn-response" data-response="no">✗ Non, pas disponible</button>
+            </div>
+            <div class="details-section">
+                <div class="date-selection">
+                    <label class="date-label">Étape 1 : Sélectionnez une ou plusieurs dates</label>
+                    <div class="date-options">
+                        <button class="btn-date" data-date="2025-11-18" data-label="Lundi 18 Nov">Lundi 18 Nov</button>
+                        <button class="btn-date" data-date="2025-11-19" data-label="Mardi 19 Nov">Mardi 19 Nov</button>
+                        <button class="btn-date" data-date="2025-11-20" data-label="Mercredi 20 Nov">Mercredi 20 Nov</button>
+                    </div>
+                    <p class="hint-text">💡 Cliquez sur les dates où vous êtes disponible</p>
+                </div>
+                <div class="times-per-date">
+                    <label class="date-label">Étape 2 : Pour chaque date, sélectionnez vos horaires</label>
+                    
+                    <div class="date-time-block" data-for-date="2025-11-18">
+                        <div class="date-time-title">Lundi 18 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-19">
+                        <div class="date-time-title">Mardi 19 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-20">
+                        <div class="date-time-title">Mercredi 20 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <p class="hint-text">💡 Vous pouvez sélectionner plusieurs horaires par date</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Vente -->
+        <div class="category" data-category="vente">
+            <div class="category-header">
+                <div class="category-title">
+                    <span class="icon">🛍️</span>
+                    <span>Vente</span>
+                </div>
+            </div>
+            <div class="response-group">
+                <button class="btn-response" data-response="yes">✓ Oui, je suis disponible</button>
+                <button class="btn-response" data-response="no">✗ Non, pas disponible</button>
+            </div>
+            <div class="details-section">
+                <div class="date-selection">
+                    <label class="date-label">Étape 1 : Sélectionnez une ou plusieurs dates</label>
+                    <div class="date-options">
+                        <button class="btn-date" data-date="2025-11-21" data-label="Jeudi 21 Nov">Jeudi 21 Nov</button>
+                        <button class="btn-date" data-date="2025-11-22" data-label="Vendredi 22 Nov">Vendredi 22 Nov</button>
+                        <button class="btn-date" data-date="2025-11-23" data-label="Samedi 23 Nov">Samedi 23 Nov</button>
+                    </div>
+                    <p class="hint-text">💡 Cliquez sur les dates où vous êtes disponible</p>
+                </div>
+                <div class="times-per-date">
+                    <label class="date-label">Étape 2 : Pour chaque date, sélectionnez vos horaires</label>
+                    
+                    <div class="date-time-block" data-for-date="2025-11-21">
+                        <div class="date-time-title">Jeudi 21 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-22">
+                        <div class="date-time-title">Vendredi 22 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-23">
+                        <div class="date-time-title">Samedi 23 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <p class="hint-text">💡 Vous pouvez sélectionner plusieurs horaires par date</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Tri -->
+        <div class="category" data-category="tri">
+            <div class="category-header">
+                <div class="category-title">
+                    <span class="icon">📦</span>
+                    <span>Tri</span>
+                </div>
+            </div>
+            <div class="response-group">
+                <button class="btn-response" data-response="yes">✓ Oui, je suis disponible</button>
+                <button class="btn-response" data-response="no">✗ Non, pas disponible</button>
+            </div>
+            <div class="details-section">
+                <div class="date-selection">
+                    <label class="date-label">Étape 1 : Sélectionnez une ou plusieurs dates</label>
+                    <div class="date-options">
+                        <button class="btn-date" data-date="2025-11-24" data-label="Dimanche 24 Nov">Dimanche 24 Nov</button>
+                        <button class="btn-date" data-date="2025-11-25" data-label="Lundi 25 Nov">Lundi 25 Nov</button>
+                        <button class="btn-date" data-date="2025-11-26" data-label="Mardi 26 Nov">Mardi 26 Nov</button>
+                    </div>
+                    <p class="hint-text">💡 Cliquez sur les dates où vous êtes disponible</p>
+                </div>
+                <div class="times-per-date">
+                    <label class="date-label">Étape 2 : Pour chaque date, sélectionnez vos horaires</label>
+                    
+                    <div class="date-time-block" data-for-date="2025-11-24">
+                        <div class="date-time-title">Dimanche 24 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-25">
+                        <div class="date-time-title">Lundi 25 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <div class="date-time-block" data-for-date="2025-11-26">
+                        <div class="date-time-title">Mardi 26 Novembre</div>
+                        <div class="time-options">
+                            <button class="btn-time" data-time="09:00">09h00 - 12h00</button>
+                            <button class="btn-time" data-time="14:00">14h00 - 17h00</button>
+                            <button class="btn-time" data-time="18:00">18h00 - 21h00</button>
+                        </div>
+                    </div>
+
+                    <p class="hint-text">💡 Vous pouvez sélectionner plusieurs horaires par date</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="submit-section">
+            <button class="btn-submit">📤 Envoyer mes réponses</button>
+            <div class="result-message">
+                <h3>✅ Merci pour vos réponses !</h3>
+                <p>Vos disponibilités ont été enregistrées avec succès.</p>
+                <div id="summary"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ⚙️ CONFIGURATION GOOGLE SHEETS
+        const GOOGLE_SCRIPT_URL = 'https://script.google.com/macros/s/AKfycbx9XjJA7Z6uyfVDmjT_rs4_WpbGGMpRtsHKbEOpBOPgwPTqopZB4BQ2vMOkLlXNF9UB/exec';
+        
+        // Structure de données : objet par date contenant les heures
+        const responses = {
+            preparation: { 
+                available: null, 
+                datesTimes: {} // {'2025-11-15': ['09:00', '14:00'], '2025-11-16': ['18:00']}
+            },
+            reception: { available: null, datesTimes: {} },
+            vente: { available: null, datesTimes: {} },
+            tri: { available: null, datesTimes: {} }
+        };
+
+        // Gestion des boutons Oui/Non
+        document.querySelectorAll('.btn-response').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.closest('.category');
+                const categoryName = category.dataset.category;
+                const response = this.dataset.response;
+                const detailsSection = category.querySelector('.details-section');
+                
+                category.querySelectorAll('.btn-response').forEach(btn => {
+                    btn.classList.remove('selected-yes', 'selected-no');
+                });
+                
+                if (response === 'yes') {
+                    this.classList.add('selected-yes');
+                    detailsSection.classList.add('active');
+                    responses[categoryName].available = true;
+                } else {
+                    this.classList.add('selected-no');
+                    detailsSection.classList.remove('active');
+                    responses[categoryName].available = false;
+                    responses[categoryName].datesTimes = {};
+                    
+                    // Réinitialiser toutes les sélections
+                    category.querySelectorAll('.btn-date').forEach(btn => btn.classList.remove('selected'));
+                    category.querySelectorAll('.btn-time').forEach(btn => btn.classList.remove('selected'));
+                    category.querySelectorAll('.date-time-block').forEach(block => block.classList.remove('active'));
+                }
+            });
+        });
+
+        // Gestion des boutons de date
+        document.querySelectorAll('.btn-date').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.closest('.category');
+                const categoryName = category.dataset.category;
+                const date = this.dataset.date;
+                const dateBlock = category.querySelector(`.date-time-block[data-for-date="${date}"]`);
+                
+                if (this.classList.contains('selected')) {
+                    // Désélectionner la date
+                    this.classList.remove('selected');
+                    dateBlock.classList.remove('active');
+                    
+                    // Supprimer la date et ses horaires
+                    delete responses[categoryName].datesTimes[date];
+                    
+                    // Réinitialiser les sélections d'heures pour cette date
+                    dateBlock.querySelectorAll('.btn-time').forEach(btn => btn.classList.remove('selected'));
+                } else {
+                    // Sélectionner la date
+                    this.classList.add('selected');
+                    dateBlock.classList.add('active');
+                    
+                    // Initialiser le tableau d'horaires pour cette date si nécessaire
+                    if (!responses[categoryName].datesTimes[date]) {
+                        responses[categoryName].datesTimes[date] = [];
+                    }
+                }
+            });
+        });
+
+        // Gestion des boutons d'heure
+        document.querySelectorAll('.btn-time').forEach(button => {
+            button.addEventListener('click', function() {
+                const category = this.closest('.category');
+                const categoryName = category.dataset.category;
+                const dateBlock = this.closest('.date-time-block');
+                const date = dateBlock.dataset.forDate;
+                const time = this.dataset.time;
+                
+                // S'assurer que la date est initialisée
+                if (!responses[categoryName].datesTimes[date]) {
+                    responses[categoryName].datesTimes[date] = [];
+                }
+                
+                if (this.classList.contains('selected')) {
+                    // Désélectionner l'heure
+                    this.classList.remove('selected');
+                    const index = responses[categoryName].datesTimes[date].indexOf(time);
+                    if (index > -1) {
+                        responses[categoryName].datesTimes[date].splice(index, 1);
+                    }
+                } else {
+                    // Sélectionner l'heure
+                    this.classList.add('selected');
+                    responses[categoryName].datesTimes[date].push(time);
+                }
+            });
+        });
+
+        // Gestion du bouton de soumission
+        document.querySelector('.btn-submit').addEventListener('click', function() {
+            const button = this;
+            
+            // Validation des champs obligatoires
+            const prenom = document.getElementById('prenom').value.trim();
+            const nom = document.getElementById('nom').value.trim();
+            const telephone = document.getElementById('telephone').value.trim();
+            
+            if (!prenom || !nom || !telephone) {
+                alert('⚠️ Veuillez remplir votre prénom, nom et téléphone avant d\'envoyer.');
+                return;
+            }
+            
+            button.disabled = true;
+            button.textContent = '⏳ Envoi en cours...';
+            
+            const timestamp = new Date().toLocaleString('fr-FR');
+            
+            // Toutes les dates et heures possibles
+            const allDates = {
+                preparation: ['2025-11-15', '2025-11-16', '2025-11-17'],
+                reception: ['2025-11-18', '2025-11-19', '2025-11-20'],
+                vente: ['2025-11-21', '2025-11-22', '2025-11-23'],
+                tri: ['2025-11-24', '2025-11-25', '2025-11-26']
+            };
+            
+            const allTimes = ['09:00', '14:00', '18:00'];
+            
+            const dataToSend = { 
+                timestamp: timestamp,
+                prenom: prenom,
+                nom: nom,
+                telephone: telephone
+            };
+            
+            ['preparation', 'reception', 'vente', 'tri'].forEach(category => {
+                const catData = responses[category];
+                dataToSend[`${category}_disponible`] = catData.available ? 'Oui' : '';
+                
+                allDates[category].forEach(date => {
+                    const dateKey = date.replace(/-/g, '_');
+                    allTimes.forEach(time => {
+                        const timeKey = time.replace(/:/g, 'h');
+                        const columnKey = `${category}_${dateKey}_${timeKey}`;
+                        
+                        // Vérifier si cette date existe et contient cette heure
+                        if (catData.datesTimes[date] && catData.datesTimes[date].includes(time)) {
+                            dataToSend[columnKey] = 'Oui';
+                        } else {
+                            dataToSend[columnKey] = ''; // Cellule vide au lieu de "Non"
+                        }
+                    });
+                });
+            });
+            
+            console.log('Données à envoyer:', dataToSend);
+            
+            fetch(GOOGLE_SCRIPT_URL, {
+                method: 'POST',
+                mode: 'no-cors',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(dataToSend)
+            })
+            .then(() => {
+                displaySuccessMessage();
+                button.textContent = '✅ Envoyé !';
+            })
+            .catch((error) => {
+                console.error('Erreur:', error);
+                alert('Une erreur est survenue lors de l\'envoi. Veuillez réessayer.');
+                button.disabled = false;
+                button.textContent = '📤 Envoyer mes réponses';
+            });
+        });
+        
+        function displaySuccessMessage() {
+            const resultMessage = document.querySelector('.result-message');
+            const summaryDiv = document.getElementById('summary');
+            
+            let summaryHTML = '<ul style="margin-top: 15px; text-align: left;">';
+            
+            const categoryNames = {
+                preparation: 'Préparation de la salle',
+                reception: 'Réception des vêtements',
+                vente: 'Vente',
+                tri: 'Tri'
+            };
+            
+            for (let [key, value] of Object.entries(responses)) {
+                if (value.available === false) {
+                    summaryHTML += `<li><strong>${categoryNames[key]}</strong> : Non disponible</li>`;
+                } else if (value.available === true) {
+                    const hasSelections = Object.keys(value.datesTimes).length > 0;
+                    if (hasSelections) {
+                        summaryHTML += `<li><strong>${categoryNames[key]}</strong> :<br>`;
+                        for (let [date, times] of Object.entries(value.datesTimes)) {
+                            if (times.length > 0) {
+                                summaryHTML += `&nbsp;&nbsp;📅 ${date} : ${times.join(', ')}<br>`;
+                            }
+                        }
+                        summaryHTML += `</li>`;
+                    } else {
+                        summaryHTML += `<li><strong>${categoryNames[key]}</strong> : Disponible mais aucune date/heure sélectionnée</li>`;
+                    }
+                }
+            }
+            
+            summaryHTML += '</ul>';
+            summaryDiv.innerHTML = summaryHTML;
+            resultMessage.classList.add('active');
+            resultMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+    </script>
+</body>
+</html>
